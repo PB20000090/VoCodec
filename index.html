@@ -1,570 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
 
-<!-- saved from url=(0055)http://home.ustc.edu.cn/~ay8067/IEEETran_2019/demo.html -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta charvctk_set="UTF-8">
-    <title>Sound demos for "VoCodec: A Low-bitrate Streamable Neural Speech Codec with Voicing-driven Quantization"</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+
+        h1,
+        h2 {
+            text-align: left;
+        }
+
+        .author-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .abstract {
+            max-width: 800px;
+            margin: 0 auto 40px;
+            text-align: justify;
+            line-height: 1.6;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .table-container {
+            margin-bottom: 60px;
+            margin: auto;
+
+
+
+
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            table-layout: fixed;
+            margin-top: 10px;
+
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .audio-container {
+            display: flex;
+            justify-content: normal;
+            margin-bottom: 10px;
+        }
+
+        .audio-container label {
+            display: block;
+            text-align: center;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .audio-block {
+            width: 15%;
+            text-align: center;
+        }
+
+        audio {
+            width: 100%;
+        }
+    </style>
 </head>
-    <body>
-    <h2>Sound demos for "VoCodec: A Low-bitrate Streamable Neural Speech Codec with Voicing-driven Quantization"</h2>
-    <h2>Xiao-Hang Jiang, Yang Ai, Rui-Chen Zheng, Li-Rong Dai      </h2>
-    <h2>National Engineering Research Center of Speech and Language Information Processing, University of Science and Technology of China, Hefei, P. R. China</h2>
-    <p>&nbsp;</p>
-    <h2>Comparison with Baseline Codecs</h2>
-              <p><em><strong>(The sampling rate is 16 kHz)</strong></em><a></a> </p>
-              <table>
-                <thead>
-                  <tr>
-                    <th colspan="10"><div align="left">Example 1 (121_121726_000004_000003.wav,  at 1.1 kbps) </div></th>
-                  </tr>
-                  <tr>
-                    <th width="192">Ground Truth </th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><audio controls="">
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/121_121726_000004_000003.wav" type="audio/wav">
-                    </audio></td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td></td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <th>DAC </th>
-                    <th>BigCodec</th>
-                    <th>AudioDec</th>
-                    <th>MDCTCodec-S</th>
-                    <th>StreamCodec</th>
-                    <th>VoCodec</th>
-                  </tr>
-                  <tr>
-                    <td><audio controls="">
+
+<body>
+
+    <h1 style="text-align: center;">VoCodec: A Low-bitrate Streamable Neural Speech Codec with Voicing-driven Quantization</h1>
+
+    <div class="author-info">
+      <p><b>Xiao-hang Jiang, Yang Ai, Rui-Chen Zheng, Zhen-Hua Ling</b></p>
+      <p>NERC-SLIP, University of Science and Technology of China, Hefei, China<br>
+      <p>{<a href="mailto:jiang_xiaohang@mail.ustc.edu.cn">jiang_xiaohang</a>, <a href="mailto:zhengruichen@mail.ustc.edu.cn">zhengruichen</a>}@mail.ustc.edu.cn,&nbsp;{<a
+                href="mailto:yangai@ustc.edu.cn">yangai</a>,<a href="mailto:zhling@ustc.edu.cn">zhling</a>}@ustc.edu.cn </p>
+    </div>
+<div class="abstract">
+        <h3>Abstract</h3>
+    <p>Neural speech codecs, as key components for compressing and reconstructing speech signals, play a significant role in speech transmission and storage. However, most existing codecs employ a uniform quantization strategy across all speech frames, allocating the same bitrate regardless of content. This approach is suboptimal for speech signals, resulting in unnecessary bitrate consumption and leaving potential for further compression. In this paper, we present a low-bitrate streamable neural speech codec called VoCodec. Unlike existing codecs, VoCodec employs a voicing-driven quantization strategy, assigning different bitrates to voiced and unvoiced frames based on their sensitivity to human auditory perception. Specifically, VoCodec incorporates a voicing detector into its fully causal encoder–quantizer–decoder neural coding framework to identify voicing characteristics in the input speech. Based on this, it adopts complex residual scalar-vector quantization for voiced frames and simple scalar quantization for unvoiced frames during quantization. Experiments show that on the LibriTTS dataset at a 16 kHz sampling rate, VoCodec outperforms baseline neural speech codecs even at a bitrate as low as 1.1 kbps. Our further experiments also confirm that introducing voicing-driven quantization can effectively reduce the bitrate by approximately 27% compared to the original uniform quantization strategy</p>
+    </div>
+    <h2>3.3. Comparison with Baseline Codecs</h2>
+    <p><em><strong>(The sampling rate is 16 kHz)</strong></em><a></a></p>
+    <div class="table-container">
+        <h4>Example 1 (121_121726_000004_000003.wav,  at 1.1 kbps) </h4>
+        <div class="audio-container">
+            <!-- <div class="audio-block">
+                <label>Source: p246</label>
+                <audio controls>
+                    <source src="demo/src/p246_119.wav" type="audio/wav">
+                    您的浏览器不支持音频播放。
+                </audio>
+            </div> -->
+            <div class="audio-block">
+                <label>Ground Truth</label>
+                <audio controls>
+                    <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/121_121726_000004_000003.wav" type="audio/wav">
+                </audio>
+          </div>
+        </div>
+        <table>
+            <tr>
+                <th>DAC</th>
+                <th>BigCodec</th>
+                <th>AudioDec</th>
+                <th>MDCTCodec-S</th>
+                <th>StreamCodec</th>
+				<th>VoCodec</th>
+            </tr>
+            <tr>
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/121_121726_000004_000003.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/121_121726_000004_000003.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/121_121726_000004_000003.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/121_121726_000004_000003.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/121_121726_000004_000003.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+				<td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/voc/121_121726_000004_000003.wav" type="audio/wav">
                     </audio></td>
-                  </tr>
-                </tbody>
-    </table>
-              <table>
-                <thead>
-                  <tr>
-                    <th colspan="10"><div align="left">Example 2 (237_126133_000021_000000.wav,  at 1.1 kbps) </div></th>
-                  </tr>
-                  <tr>
-                    <th width="192">Ground Truth </th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><audio controls="">
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/237_126133_000021_000000.wav" type="audio/wav">
-                    </audio></td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td></td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <th>DAC </th>
-                    <th>BigCodec</th>
-                    <th>AudioDec</th>
-                    <th>MDCTCodec-S</th>
-                    <th>StreamCodec</th>
-                    <th>VoCodec</th>
-                  </tr>
-                  <tr>
-                    <td><audio controls="">
+            </tr>
+        </table>
+    </div>
+    <div class="table-container">
+        <h4>Example 2 (237_126133_000021_000000.wav, at 1.1 kbps)  </h4>
+        <div class="audio-container">
+            <!-- <div class="audio-block">
+                <label>Source: p246</label>
+                <audio controls>
+                    <source src="demo/src/p246_119.wav" type="audio/wav">
+                    您的浏览器不支持音频播放。
+                </audio>
+            </div> -->
+            <div class="audio-block">
+                <label>Ground Truth</label>
+                <audio controls>
+                    <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/237_126133_000021_000000.wav" type="audio/wav">
+                </audio>
+          </div>
+        </div>
+        <table>
+            <tr>
+                <th>DAC</th>
+                <th>BigCodec</th>
+                <th>AudioDec</th>
+                <th>MDCTCodec-S</th>
+                <th>StreamCodec</th>
+				<th>VoCodec</th>
+            </tr>
+            <tr>
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/237_126133_000021_000000.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/237_126133_000021_000000.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/237_126133_000021_000000.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/237_126133_000021_000000.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/237_126133_000021_000000.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+				<td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/voc/237_126133_000021_000000.wav" type="audio/wav">
                     </audio></td>
-                  </tr>
-                </tbody>
-              </table>
-              <table>
-                <thead>
-                  <tr>
-                    <th colspan="10"><div align="left">Example 3 (1284_1180_000043_000001.wav,  at 1.1 kbps) </div></th>
-                  </tr>
-                  <tr>
-                    <th width="192">Ground Truth </th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><audio controls="">
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/1284_1180_000043_000001.wav" type="audio/wav">
-                    </audio></td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td></td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <th>DAC </th>
-                    <th>BigCodec</th>
-                    <th>AudioDec</th>
-                    <th>MDCTCodec-S</th>
-                    <th>StreamCodec</th>
-                    <th>VoCodec</th>
-                  </tr>
-                  <tr>
-                    <td><audio controls="">
+            </tr>
+        </table>
+    </div>
+    <div class="table-container">
+        <h4>Example 3 (1284_1180_000043_000001.wav,  at 1.1 kbps) </h4>
+        <div class="audio-container">
+            <!-- <div class="audio-block">
+                <label>Source: p246</label>
+                <audio controls>
+                    <source src="demo/src/p246_119.wav" type="audio/wav">
+                    您的浏览器不支持音频播放。
+                </audio>
+            </div> -->
+            <div class="audio-block">
+                <label>Ground Truth</label>
+                <audio controls>
+                    <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/1284_1180_000043_000001.wav" type="audio/wav">
+                </audio>
+          </div>
+        </div>
+        <table>
+            <tr>
+                <th>DAC</th>
+                <th>BigCodec</th>
+                <th>AudioDec</th>
+                <th>MDCTCodec-S</th>
+                <th>StreamCodec</th>
+				<th>VoCodec</th>
+            </tr>
+            <tr>
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/1284_1180_000043_000001.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/1284_1180_000043_000001.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/1284_1180_000043_000001.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/1284_1180_000043_000001.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/1284_1180_000043_000001.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+				<td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/voc/1284_1180_000043_000001.wav" type="audio/wav">
                     </audio></td>
-                  </tr>
-                </tbody>
-              </table>
-              <table>
-                <thead>
-                  <tr>
-                    <th colspan="10"><div align="left">Example 4 (1580_141084_000016_000003.wav,  at 1.1 kbps) </div></th>
-                  </tr>
-                  <tr>
-                    <th width="192">Ground Truth </th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><audio controls="">
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/1580_141084_000016_000003.wav" type="audio/wav">
-                    </audio></td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td></td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <th>DAC </th>
-                    <th>BigCodec</th>
-                    <th>AudioDec</th>
-                    <th>MDCTCodec-S</th>
-                    <th>StreamCodec</th>
-                    <th>VoCodec</th>
-                  </tr>
-                  <tr>
-                    <td><audio controls="">
+            </tr>
+        </table>
+    </div>
+    <div class="table-container">
+        <h4>Example 4 (1580_141084_000016_000003.wav,  at 1.1 kbps) </h4>
+        <div class="audio-container">
+            <!-- <div class="audio-block">
+                <label>Source: p246</label>
+                <audio controls>
+                    <source src="demo/src/p246_119.wav" type="audio/wav">
+                    您的浏览器不支持音频播放。
+                </audio>
+            </div> -->
+            <div class="audio-block">
+                <label>Ground Truth</label>
+                <audio controls>
+                    <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/1580_141084_000016_000003.wav" type="audio/wav">
+                </audio>
+          </div>
+        </div>
+        <table>
+            <tr>
+                <th>DAC</th>
+                <th>BigCodec</th>
+                <th>AudioDec</th>
+                <th>MDCTCodec-S</th>
+                <th>StreamCodec</th>
+				<th>VoCodec</th>
+            </tr>
+            <tr>
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/1580_141084_000016_000003.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/1580_141084_000016_000003.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/1580_141084_000016_000003.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/1580_141084_000016_000003.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/1580_141084_000016_000003.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+				<td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/voc/1580_141084_000016_000003.wav" type="audio/wav">
                     </audio></td>
-                  </tr>
-                </tbody>
-              </table>
-              <table>
-                <thead>
-                  <tr>
-                    <th colspan="10"><div align="left">Example 5 (2300_131720_000033_000003.wav,  at 1.1 kbps) </div></th>
-                  </tr>
-                  <tr>
-                    <th width="192">Ground Truth </th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><audio controls="">
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/2300_131720_000033_000003.wav" type="audio/wav">
-                    </audio></td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td></td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <th>DAC </th>
-                    <th>BigCodec</th>
-                    <th>AudioDec</th>
-                    <th>MDCTCodec-S</th>
-                    <th>StreamCodec</th>
-                    <th>VoCodec</th>
-                  </tr>
-                  <tr>
-                    <td><audio controls="">
+            </tr>
+        </table>
+    </div>
+    <div class="table-container">
+        <h4>Example 5 (2300_131720_000033_000003.wav,  at 1.1 kbps) </h4>
+        <div class="audio-container">
+            <!-- <div class="audio-block">
+                <label>Source: p246</label>
+                <audio controls>
+                    <source src="demo/src/p246_119.wav" type="audio/wav">
+                    您的浏览器不支持音频播放。
+                </audio>
+            </div> -->
+            <div class="audio-block">
+                <label>Ground Truth</label>
+                <audio controls>
+                    <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/2300_131720_000033_000003.wav" type="audio/wav">
+                </audio>
+          </div>
+        </div>
+        <table>
+            <tr>
+                <th>DAC</th>
+                <th>BigCodec</th>
+                <th>AudioDec</th>
+                <th>MDCTCodec-S</th>
+                <th>StreamCodec</th>
+				<th>VoCodec</th>
+            </tr>
+            <tr>
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/2300_131720_000033_000003.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/2300_131720_000033_000003.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/2300_131720_000033_000003.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/2300_131720_000033_000003.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/2300_131720_000033_000003.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+				<td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/voc/2300_131720_000033_000003.wav" type="audio/wav">
                     </audio></td>
-                  </tr>
-                </tbody>
-              </table>
-              <table>
-                <thead>
-                  <tr>
-                    <th colspan="10"><div align="left">Example 6 (3729_6852_000040_000002.wav,  at 1.1 kbps) </div></th>
-                  </tr>
-                  <tr>
-                    <th width="192">Ground Truth </th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><audio controls="">
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/3729_6852_000040_000002.wav" type="audio/wav">
-                    </audio></td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td></td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <th>DAC </th>
-                    <th>BigCodec</th>
-                    <th>AudioDec</th>
-                    <th>MDCTCodec-S</th>
-                    <th>StreamCodec</th>
-                    <th>VoCodec</th>
-                  </tr>
-                  <tr>
-                    <td><audio controls="">
+            </tr>
+        </table>
+    </div>
+    <div class="table-container">
+        <h4>Example 6 (3729_6852_000040_000002.wav,  at 1.1 kbps) </h4>
+        <div class="audio-container">
+            <!-- <div class="audio-block">
+                <label>Source: p246</label>
+                <audio controls>
+                    <source src="demo/src/p246_119.wav" type="audio/wav">
+                    您的浏览器不支持音频播放。
+                </audio>
+            </div> -->
+            <div class="audio-block">
+                <label>Ground Truth</label>
+                <audio controls>
+                    <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/3729_6852_000040_000002.wav" type="audio/wav">
+                </audio>
+          </div>
+        </div>
+        <table>
+            <tr>
+                <th>DAC</th>
+                <th>BigCodec</th>
+                <th>AudioDec</th>
+                <th>MDCTCodec-S</th>
+                <th>StreamCodec</th>
+				<th>VoCodec</th>
+            </tr>
+            <tr>
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/3729_6852_000040_000002.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/3729_6852_000040_000002.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/3729_6852_000040_000002.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/3729_6852_000040_000002.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/3729_6852_000040_000002.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+				<td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/voc/3729_6852_000040_000002.wav" type="audio/wav">
                     </audio></td>
-                  </tr>
-                </tbody>
-              </table>
-              <table>
-                <thead>
-                  <tr>
-                    <th colspan="10"><div align="left">Example 7 (5142_33396_000003_000003.wav,  at 1.1 kbps) </div></th>
-                  </tr>
-                  <tr>
-                    <th width="192">Ground Truth </th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><audio controls="">
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/5142_33396_000003_000003.wav" type="audio/wav">
-                    </audio></td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td></td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <th>DAC </th>
-                    <th>BigCodec</th>
-                    <th>AudioDec</th>
-                    <th>MDCTCodec-S</th>
-                    <th>StreamCodec</th>
-                    <th>VoCodec</th>
-                  </tr>
-                  <tr>
-                    <td><audio controls="">
+            </tr>
+        </table>
+    </div>
+    <div class="table-container">
+        <h4>Example 7 (5142_33396_000003_000003.wav,  at 1.1 kbps) </h4>
+        <div class="audio-container">
+            <!-- <div class="audio-block">
+                <label>Source: p246</label>
+                <audio controls>
+                    <source src="demo/src/p246_119.wav" type="audio/wav">
+                    您的浏览器不支持音频播放。
+                </audio>
+            </div> -->
+            <div class="audio-block">
+                <label>Ground Truth</label>
+                <audio controls>
+                    <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/5142_33396_000003_000003.wav" type="audio/wav">
+                </audio>
+          </div>
+        </div>
+        <table>
+            <tr>
+                <th>DAC</th>
+                <th>BigCodec</th>
+                <th>AudioDec</th>
+                <th>MDCTCodec-S</th>
+                <th>StreamCodec</th>
+				<th>VoCodec</th>
+            </tr>
+            <tr>
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/5142_33396_000003_000003.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/5142_33396_000003_000003.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/5142_33396_000003_000003.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/5142_33396_000003_000003.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/5142_33396_000003_000003.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+				<td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/voc/5142_33396_000003_000003.wav" type="audio/wav">
                     </audio></td>
-                  </tr>
-                </tbody>
-              </table>
-              <table>
-                <thead>
-                  <tr>
-                    <th colspan="10"><div align="left">Example 8 (5683_32866_000039_000006.wav,  at 1.1 kbps) </div></th>
-                  </tr>
-                  <tr>
-                    <th width="192">Ground Truth </th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><audio controls="">
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/5683_32866_000039_000006.wav" type="audio/wav">
-                    </audio></td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td></td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <th>DAC </th>
-                    <th>BigCodec</th>
-                    <th>AudioDec</th>
-                    <th>MDCTCodec-S</th>
-                    <th>StreamCodec</th>
-                    <th>VoCodec</th>
-                  </tr>
-                  <tr>
-                    <td><audio controls="">
+            </tr>
+        </table>
+    </div>
+    <div class="table-container">
+        <h4>Example 8 (5683_32866_000039_000006.wav,  at 1.1 kbps) </h4>
+        <div class="audio-container">
+            <!-- <div class="audio-block">
+                <label>Source: p246</label>
+                <audio controls>
+                    <source src="demo/src/p246_119.wav" type="audio/wav">
+                    您的浏览器不支持音频播放。
+                </audio>
+            </div> -->
+            <div class="audio-block">
+                <label>Ground Truth</label>
+                <audio controls>
+                    <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/5683_32866_000039_000006.wav" type="audio/wav">
+                </audio>
+          </div>
+        </div>
+        <table>
+            <tr>
+                <th>DAC</th>
+                <th>BigCodec</th>
+                <th>AudioDec</th>
+                <th>MDCTCodec-S</th>
+                <th>StreamCodec</th>
+				<th>VoCodec</th>
+            </tr>
+            <tr>
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/5683_32866_000039_000006.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/5683_32866_000039_000006.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/5683_32866_000039_000006.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/5683_32866_000039_000006.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/5683_32866_000039_000006.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+				<td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/voc/5683_32866_000039_000006.wav" type="audio/wav">
                     </audio></td>
-                  </tr>
-                </tbody>
-              </table>
-              <table>
-                <thead>
-                  <tr>
-                    <th colspan="10"><div align="left">Example 9 (7021_85628_000042_000001.wav,  at 1.1 kbps) </div></th>
-                  </tr>
-                  <tr>
-                    <th width="192">Ground Truth </th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><audio controls="">
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/7021_85628_000042_000001.wav" type="audio/wav">
-                    </audio></td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td></td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <th>DAC </th>
-                    <th>BigCodec</th>
-                    <th>AudioDec</th>
-                    <th>MDCTCodec-S</th>
-                    <th>StreamCodec</th>
-                    <th>VoCodec</th>
-                  </tr>
-                  <tr>
-                    <td><audio controls="">
+            </tr>
+        </table>
+    </div>
+    <div class="table-container">
+        <h4>Example 9 (7021_85628_000042_000001.wav,  at 1.1 kbps) </h4>
+        <div class="audio-container">
+            <!-- <div class="audio-block">
+                <label>Source: p246</label>
+                <audio controls>
+                    <source src="demo/src/p246_119.wav" type="audio/wav">
+                    您的浏览器不支持音频播放。
+                </audio>
+            </div> -->
+            <div class="audio-block">
+                <label>Ground Truth</label>
+                <audio controls>
+                    <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/7021_85628_000042_000001.wav" type="audio/wav">
+                </audio>
+          </div>
+        </div>
+        <table>
+            <tr>
+                <th>DAC</th>
+                <th>BigCodec</th>
+                <th>AudioDec</th>
+                <th>MDCTCodec-S</th>
+                <th>StreamCodec</th>
+				<th>VoCodec</th>
+            </tr>
+            <tr>
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/7021_85628_000042_000001.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/7021_85628_000042_000001.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/7021_85628_000042_000001.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/7021_85628_000042_000001.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/7021_85628_000042_000001.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+				<td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/voc/7021_85628_000042_000001.wav" type="audio/wav">
                     </audio></td>
-                  </tr>
-                </tbody>
-              </table>
-              <table>
-                <thead>
-                  <tr>
-                    <th colspan="10"><div align="left">Example 10 (8455_210777_000014_000001.wav,  at 1.1 kbps) </div></th>
-                  </tr>
-                  <tr>
-                    <th width="192">Ground Truth </th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                    <th width="192">&nbsp;</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><audio controls="">
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/8455_210777_000014_000001.wav" type="audio/wav">
-                    </audio></td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td></td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <th>DAC </th>
-                    <th>BigCodec</th>
-                    <th>AudioDec</th>
-                    <th>MDCTCodec-S</th>
-                    <th>StreamCodec</th>
-                    <th>VoCodec</th>
-                  </tr>
-                  <tr>
-                    <td><audio controls="">
+            </tr>
+        </table>
+    </div>
+    <div class="table-container">
+        <h4>Example 10 (8455_210777_000014_000001.wav,  at 1.1 kbps) </h4>
+        <div class="audio-container">
+            <!-- <div class="audio-block">
+                <label>Source: p246</label>
+                <audio controls>
+                    <source src="demo/src/p246_119.wav" type="audio/wav">
+                    您的浏览器不支持音频播放。
+                </audio>
+            </div> -->
+            <div class="audio-block">
+                <label>Ground Truth</label>
+                <audio controls>
+                    <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/8455_210777_000014_000001.wav" type="audio/wav">
+                </audio>
+          </div>
+        </div>
+        <table>
+            <tr>
+                <th>DAC</th>
+                <th>BigCodec</th>
+                <th>AudioDec</th>
+                <th>MDCTCodec-S</th>
+                <th>StreamCodec</th>
+				<th>VoCodec</th>
+            </tr>
+            <tr>
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/8455_210777_000014_000001.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/8455_210777_000014_000001.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/8455_210777_000014_000001.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/8455_210777_000014_000001.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+                <td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/8455_210777_000014_000001.wav" type="audio/wav">
                     </audio></td>
-                    <td><audio controls="">
+				<td><audio controls>
                         <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/voc/8455_210777_000014_000001.wav" type="audio/wav">
                     </audio></td>
-                  </tr>
-                </tbody>
-              </table>
-              <p>&nbsp;</p>
-              <p></p>
-              <p>&nbsp;</p>
-              <p>&nbsp;</p>
+            </tr>
+        </table>
+    </div>
+</body>
 
-    </body></html>
-
+</html>

@@ -1,584 +1,874 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
 
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo Page</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-        }
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VoCodec • Speech Samples</title>
+<style>
+    :root{
+      --bg0:#070A12;
+      --bg1:#0B1020;
+      --card:rgba(255,255,255,.06);
+      --card2:rgba(255,255,255,.04);
+      --border:rgba(255,255,255,.12);
+      --text:#E9ECF4;
+      --muted:#AAB1C3;
+      --accent:#7C5CFF;
+      --accent2:#32D3FF;
+      --accent3:#3AF0A5;
+      --shadow:0 16px 40px rgba(0,0,0,.35);
+      --radius:18px;
+    }
 
-        h1,
-        h2 {
-            text-align: left;
-        }
+    *{ box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+    body{
+      margin:0;
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:
+        radial-gradient(1200px 800px at 15% 10%, rgba(124,92,255,.22), transparent 60%),
+        radial-gradient(900px 700px at 90% 25%, rgba(50,211,255,.18), transparent 55%),
+        linear-gradient(180deg, var(--bg0), var(--bg1) 55%, #070A12);
+      line-height:1.55;
+    }
 
-        .author-info {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+    a{ color:inherit; text-decoration:none; }
+    a:hover{ text-decoration:underline; text-decoration-thickness:2px; text-underline-offset:3px; }
 
-        .abstract {
-            max-width: 800px;
-            margin: 0 auto 40px;
-            text-align: justify;
-            line-height: 1.6;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-        }
+    .topbar{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(10px);
+      background: rgba(7,10,18,.55);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .topbar-inner{
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 14px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+    .brand{ display:flex; align-items:center; gap:12px; min-width: 220px; }
+    .logo{
+      width: 34px; height: 34px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(124,92,255,.95), rgba(50,211,255,.85));
+      box-shadow: 0 10px 24px rgba(124,92,255,.22);
+    }
+    .brand-title{ display:flex; flex-direction:column; line-height:1.15; }
+    .brand-title strong{ font-size: 14px; letter-spacing: .2px; }
+    .brand-title span{ font-size: 12px; color: var(--muted); }
 
-        .table-container {
-            margin-bottom: 60px;
-            margin: auto;
+    nav{ display:flex; flex-wrap:wrap; gap: 10px 14px; justify-content:flex-end; }
+    nav a{
+      font-size: 13px;
+      color: var(--muted);
+      padding: 6px 10px;
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      white-space:nowrap;
+    }
+    nav a:hover{ color: var(--text); border-color: rgba(255,255,255,.18); text-decoration:none; }
 
+    .container{ max-width: 1120px; margin: 0 auto; padding: 28px 18px 70px; }
+    .card{ background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .card.pad{ padding: 18px 18px; }
 
+    .hero{ padding: 22px 18px; overflow:hidden; position:relative; }
+    .hero::before{
+      content:"";
+      position:absolute; inset:-1px;
+      background:
+        radial-gradient(700px 280px at 10% 20%, rgba(124,92,255,.22), transparent 60%),
+        radial-gradient(700px 280px at 85% 10%, rgba(50,211,255,.16), transparent 60%);
+      pointer-events:none;
+    }
+    .hero > *{ position:relative; }
 
+    h1{ margin: 6px 0 10px; font-size: clamp(26px, 3.2vw, 42px); letter-spacing: -0.02em; line-height:1.12; }
+    .kicker{ color: var(--muted); font-size: 13px; margin: 0 0 6px; text-transform: uppercase; letter-spacing: .16em; }
+    .subtitle{ margin: 0 0 14px; color: var(--muted); font-size: 14px; max-width: 980px; }
 
-        }
+    .meta{ margin-top: 14px; color: var(--muted); font-size: 13px; line-height:1.65; }
+    .meta b{ color: rgba(233,236,244,.95); }
 
-        table {
-            width: 100%;
-            border-collapse: separate;
-            table-layout: fixed;
-            margin-top: 10px;
+    .btnrow{ margin-top: 14px; display:flex; flex-wrap:wrap; gap: 10px; }
+    .btn{
+      display:inline-flex; align-items:center; gap: 10px;
+      padding: 10px 12px; border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--text); font-size: 13px;
+    }
+    .btn.primary{
+      border-color: rgba(124,92,255,.45);
+      background: linear-gradient(135deg, rgba(124,92,255,.22), rgba(50,211,255,.10));
+    }
+    .btn:hover{ text-decoration:none; border-color: rgba(255,255,255,.22); }
 
-        }
+    .section{ margin-top: 18px; }
+    .section h2{ margin: 24px 0 10px; font-size: 18px; letter-spacing: .2px; }
+    .muted{ color: var(--muted); }
+    .abstract p{ margin: 10px 0 0; color: rgba(233,236,244,.92); }
 
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
+    .figgrid{ display:grid; grid-template-columns: repeat(12, 1fr); gap: 14px; margin-top: 12px; }
+    .figure{ overflow:hidden; background: var(--card2); }
+    .figcap{ padding: 10px 12px 12px; color: var(--muted); font-size: 13px; }
+    .span-12{ grid-column: span 12; }
+    .placeholder{
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      padding: 18px 16px;
+      background: rgba(255,255,255,.02);
+      display:grid;
+      gap: 10px;
+    }
+    .ph-title{ font-weight: 800; letter-spacing: .2px; }
+    .ph-note{ color: var(--muted); font-size: 13px; }
+    .placeholder code{
+      color: rgba(233,236,244,.92);
+      font-size: 12px;
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 10px;
+      padding: 4px 8px;
+    }
 
-        th {
-            background-color: #f2f2f2;
-        }
+    .toolbar{
+      display:flex; flex-wrap:wrap; gap: 10px;
+      align-items:center; justify-content:space-between;
+      margin-top: 10px;
+    }
+    .search{
+      flex: 1 1 320px;
+      display:flex; gap:10px; align-items:center;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.16);
+    }
+    .search input{
+      width: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 13px;
+    }
+    .search input::placeholder{ color: rgba(170,177,195,.75); }
+    .count{
+      font-size: 13px;
+      color: var(--muted);
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      white-space:nowrap;
+    }
 
-        .audio-container {
-            display: flex;
-            justify-content: normal;
-            margin-bottom: 10px;
-        }
+    .samples .sample{ margin-top: 14px; }
+    .sample-head{
+      display:flex; flex-wrap:wrap;
+      align-items:flex-start; justify-content:space-between; gap: 10px;
+      padding: 14px 16px 0;
+    }
+    .sample-title{ display:flex; flex-wrap:wrap; align-items:baseline; gap: 10px; }
+    .sample-head h3{ margin:0; font-size: 16px; letter-spacing: .2px; }
+    .sample-head code{
+      color: var(--muted); font-size: 12px;
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 10px;
+      padding: 6px 10px;
+    }
+    .badges{ display:flex; flex-wrap:wrap; gap: 8px; }
 
-        .audio-container label {
-            display: block;
-            text-align: center;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
+    .chip{
+      display:inline-flex; align-items:center; gap: 8px;
+      padding: 6px 10px; border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.10);
+      white-space:nowrap;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .dot{ width: 8px; height: 8px; border-radius: 99px;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(124,92,255,.18);
+    }
+    .dot2{ background: var(--accent3); box-shadow: 0 0 0 4px rgba(58,240,165,.14); }
 
-        .audio-block {
-            width: 15%;
-            text-align: center;
-        }
+    .gtrow{
+      padding: 10px 16px 2px;
+      display:flex; gap: 12px;
+      align-items:center; flex-wrap:wrap;
+    }
+    .label{ font-weight: 800; letter-spacing: .2px; font-size: 13px; }
 
-        audio {
-            width: 100%;
-        }
-    </style>
+    .table-scroll{ overflow-x:auto; padding: 10px 14px 16px; }
+    table{
+      width: 100%;
+      min-width: 980px;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 14px;
+      overflow:hidden;
+    }
+    th, td{
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      border-right: 1px solid rgba(255,255,255,.06);
+      padding: 10px 10px;
+      text-align:center;
+      vertical-align:middle;
+    }
+    th:last-child, td:last-child{ border-right:none; }
+    tr:last-child td{ border-bottom:none; }
+    th{
+      position: sticky;
+      top: 0;
+      background: rgba(255,255,255,.06);
+      color: rgba(233,236,244,.95);
+      font-size: 13px;
+      font-weight: 800;
+      z-index: 2;
+    }
+    th.vocodec{
+      background: linear-gradient(135deg, rgba(124,92,255,.22), rgba(50,211,255,.10));
+      border-right: 1px solid rgba(255,255,255,.08);
+    }
+    td.vocodec{ background: rgba(124,92,255,.08); }
+
+    audio{ width: 100%; max-width: 240px; accent-color: var(--accent); }
+
+    .footer{
+      margin-top: 26px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align:center;
+      padding: 18px 10px;
+      border-top: 1px solid rgba(255,255,255,.10);
+    }
+
+    .backtop{
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(7,10,18,.55);
+      color: var(--text);
+      box-shadow: 0 14px 30px rgba(0,0,0,.35);
+      backdrop-filter: blur(10px);
+      font-size: 13px;
+      opacity:.92;
+    }
+    .backtop:hover{ opacity:1; text-decoration:none; border-color: rgba(255,255,255,.22); }
+.figure img{ display:block; width:100%; height:auto; }
+
+    @media (max-width: 980px){
+      table{ min-width: 860px; }
+    }
+  </style>
 </head>
-
 <body>
+<div class="topbar">
+<div class="topbar-inner">
+<div class="brand">
+<div aria-hidden="true" class="logo"></div>
+<div class="brand-title">
+<strong>VoCodec Demo</strong>
+<span>Low-bitrate streamable neural speech codec</span>
+</div>
+</div>
+<nav>
+<a href="#abstract">Abstract</a>
+<a href="#figures">Figure</a>
+<a href="#samples">Samples (16 kHz)</a>
+<a href="#samples48">Samples (48 kHz)</a>
+</nav>
+</div>
+</div><div style="max-width:1120px;margin:10px auto 0;padding:0 18px;color:#AAB1C3;font-size:13px;">Tip: If audio fails to load or playback is choppy, please refresh the page, or try a VPN / network accelerator. (The first load may take a moment.)</div>
+<main class="container">
+<section aria-label="Hero" class="hero card">
+<div class="kicker">Speech Samples</div>
+<h1>VoCodec: A Low-bitrate Streamable Neural Speech Codec with Voicing-driven Quantization</h1>
+<div class="btnrow">
+<a class="btn primary" href="#samples">Jump to samples</a>
+<a class="btn" href="#figures">Jump to figure</a>
+</div>
+<div class="meta">
+<b>Anonymous submission to Interspeech 2026</b><br/>
+<!--NERC-SLIP, University of Science and Technology of China, Hefei, China<br/>
+{<a href="mailto:jiang_xiaohang@mail.ustc.edu.cn">jiang_xiaohang</a>, <a href="mailto:zhengruichen@mail.ustc.edu.cn">zhengruichen</a>}@mail.ustc.edu.cn, 
+{<a href="mailto:yangai@ustc.edu.cn">yangai</a>, <a href="mailto:zhling@ustc.edu.cn">zhling</a>}@ustc.edu.cn
+      </div>-->
+</section>
+<section aria-label="Abstract" class="section" id="abstract">
+<div class="card pad abstract">
+<div class="kicker">Abstract</div>
+<p>Neural speech codecs, as key components for compressing and reconstructing speech signals, play a significant role in speech transmission and storage. However, most existing codecs employ a uniform quantization strategy across all speech frames, allocating the same bitrate regardless of content. This approach is suboptimal for speech signals, resulting in unnecessary bitrate consumption and leaving potential for further compression. In this paper, we present a low-bitrate streamable neural speech codec called VoCodec. Unlike existing codecs, VoCodec employs a voicing-driven quantization strategy, assigning different bitrates to voiced and unvoiced frames based on their sensitivity to human auditory perception. Specifically, VoCodec incorporates a voicing detector into its fully causal encoder–quantizer–decoder neural coding framework to identify voicing characteristics in the input speech. Based on this, it adopts complex residual scalar-vector quantization for voiced frames and simple scalar quantization for unvoiced frames during quantization. Experiments show that on the LibriTTS dataset at a 16 kHz sampling rate, VoCodec outperforms baseline neural speech codecs even at a bitrate as low as 1.1 kbps. Our further experiments also confirm that introducing voicing-driven quantization can effectively reduce the bitrate by approximately 27% compared to the original uniform quantization strategy.</p>
+</div>
+</section>
+    <section id="figures" class="section" aria-label="Paper figures">
+      <h2>Paper Figure</h2>
+      <p class="muted"></p>
 
-    <h1 style="text-align: center;">VoCodec: A Low-bitrate Streamable Neural Speech Codec with Voicing-driven Quantization</h1>
+      <div class="figgrid">
+        <div class="card figure span-12">
+          <img src="fig1.png" alt="Fig.1 Overview of P2PSynCodec" />
+          <div class="figcap"><b>Fig. 1.</b> Overview of the proposed P2PSynCodec and its pseudo-VQ training process.</div>
+        </div>
 
-    <div class="author-info">
-      <p><b>Xiao-hang Jiang, Yang Ai, Rui-Chen Zheng, Zhen-Hua Ling</b></p>
-      <p>NERC-SLIP, University of Science and Technology of China, Hefei, China<br>
-      <p>{<a href="mailto:jiang_xiaohang@mail.ustc.edu.cn">jiang_xiaohang</a>, <a href="mailto:zhengruichen@mail.ustc.edu.cn">zhengruichen</a>}@mail.ustc.edu.cn,&nbsp;{<a
-                href="mailto:yangai@ustc.edu.cn">yangai</a>,<a href="mailto:zhling@ustc.edu.cn">zhling</a>}@ustc.edu.cn </p>
-    </div>
-<div class="abstract">
-        <h3>Abstract</h3>
-    <p>Neural speech codecs, as key components for compressing and reconstructing speech signals, play a significant role in speech transmission and storage. However, most existing codecs employ a uniform quantization strategy across all speech frames, allocating the same bitrate regardless of content. This approach is suboptimal for speech signals, resulting in unnecessary bitrate consumption and leaving potential for further compression. In this paper, we present a low-bitrate streamable neural speech codec called VoCodec. Unlike existing codecs, VoCodec employs a voicing-driven quantization strategy, assigning different bitrates to voiced and unvoiced frames based on their sensitivity to human auditory perception. Specifically, VoCodec incorporates a voicing detector into its fully causal encoder–quantizer–decoder neural coding framework to identify voicing characteristics in the input speech. Based on this, it adopts complex residual scalar-vector quantization for voiced frames and simple scalar quantization for unvoiced frames during quantization. Experiments show that on the LibriTTS dataset at a 16 kHz sampling rate, VoCodec outperforms baseline neural speech codecs even at a bitrate as low as 1.1 kbps. Our further experiments also confirm that introducing voicing-driven quantization can effectively reduce the bitrate by approximately 27% compared to the original uniform quantization strategy</p>
-    </div>
-    <h2>3.3. Comparison with Baseline Codecs</h2>
-    <p><em><strong>(The sampling rate is 16 kHz)</strong></em><a></a></p>
-    <div class="table-container">
-        <h4>Example 1 (121_121726_000004_000003.wav,  at 1.1 kbps) </h4>
-        <div class="audio-container">
-            <!-- <div class="audio-block">
-                <label>Source: p246</label>
-                <audio controls>
-                    <source src="demo/src/p246_119.wav" type="audio/wav">
-                    您的浏览器不支持音频播放。
-                </audio>
-            </div> -->
-            <div class="audio-block">
-                <label>Ground Truth</label>
-                <audio controls>
-                    <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/121_121726_000004_000003.wav" type="audio/wav">
-                </audio>
-          </div>
-        </div>
-        <table>
-            <tr>
-                <th>DAC</th>
-                <th>BigCodec</th>
-                <th>AudioDec</th>
-                <th>MDCTCodec-S</th>
-                <th>StreamCodec</th>
-				<th>VoCodec</th>
-            </tr>
-            <tr>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/121_121726_000004_000003.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/121_121726_000004_000003.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/121_121726_000004_000003.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/121_121726_000004_000003.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/121_121726_000004_000003.wav" type="audio/wav">
-                    </audio></td>
-				<td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/Vocodec_1.1kbps/121_121726_000004_000003.wav" type="audio/wav">
-                    </audio></td>
-            </tr>
-        </table>
-    </div>
-    <div class="table-container">
-        <h4>Example 2 (237_126133_000021_000000.wav, at 1.1 kbps)  </h4>
-        <div class="audio-container">
-            <!-- <div class="audio-block">
-                <label>Source: p246</label>
-                <audio controls>
-                    <source src="demo/src/p246_119.wav" type="audio/wav">
-                    您的浏览器不支持音频播放。
-                </audio>
-            </div> -->
-            <div class="audio-block">
-                <label>Ground Truth</label>
-                <audio controls>
-                    <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/237_126133_000021_000000.wav" type="audio/wav">
-                </audio>
-          </div>
-        </div>
-        <table>
-            <tr>
-                <th>DAC</th>
-                <th>BigCodec</th>
-                <th>AudioDec</th>
-                <th>MDCTCodec-S</th>
-                <th>StreamCodec</th>
-				<th>VoCodec</th>
-            </tr>
-            <tr>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/237_126133_000021_000000.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/237_126133_000021_000000.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/237_126133_000021_000000.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/237_126133_000021_000000.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/237_126133_000021_000000.wav" type="audio/wav">
-                    </audio></td>
-				<td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/Vocodec_1.1kbps/237_126133_000021_000000.wav" type="audio/wav">
-                    </audio></td>
-            </tr>
-        </table>
-    </div>
-    <div class="table-container">
-        <h4>Example 3 (1284_1180_000043_000001.wav,  at 1.1 kbps) </h4>
-        <div class="audio-container">
-            <!-- <div class="audio-block">
-                <label>Source: p246</label>
-                <audio controls>
-                    <source src="demo/src/p246_119.wav" type="audio/wav">
-                    您的浏览器不支持音频播放。
-                </audio>
-            </div> -->
-            <div class="audio-block">
-                <label>Ground Truth</label>
-                <audio controls>
-                    <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/1284_1180_000043_000001.wav" type="audio/wav">
-                </audio>
-          </div>
-        </div>
-        <table>
-            <tr>
-                <th>DAC</th>
-                <th>BigCodec</th>
-                <th>AudioDec</th>
-                <th>MDCTCodec-S</th>
-                <th>StreamCodec</th>
-				<th>VoCodec</th>
-            </tr>
-            <tr>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/1284_1180_000043_000001.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/1284_1180_000043_000001.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/1284_1180_000043_000001.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/1284_1180_000043_000001.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/1284_1180_000043_000001.wav" type="audio/wav">
-                    </audio></td>
-				<td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/Vocodec_1.1kbps/1284_1180_000043_000001.wav" type="audio/wav">
-                    </audio></td>
-            </tr>
-        </table>
-    </div>
-    <div class="table-container">
-        <h4>Example 4 (1580_141084_000016_000003.wav,  at 1.1 kbps) </h4>
-        <div class="audio-container">
-            <!-- <div class="audio-block">
-                <label>Source: p246</label>
-                <audio controls>
-                    <source src="demo/src/p246_119.wav" type="audio/wav">
-                    您的浏览器不支持音频播放。
-                </audio>
-            </div> -->
-            <div class="audio-block">
-                <label>Ground Truth</label>
-                <audio controls>
-                    <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/1580_141084_000016_000003.wav" type="audio/wav">
-                </audio>
-          </div>
-        </div>
-        <table>
-            <tr>
-                <th>DAC</th>
-                <th>BigCodec</th>
-                <th>AudioDec</th>
-                <th>MDCTCodec-S</th>
-                <th>StreamCodec</th>
-				<th>VoCodec</th>
-            </tr>
-            <tr>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/1580_141084_000016_000003.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/1580_141084_000016_000003.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/1580_141084_000016_000003.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/1580_141084_000016_000003.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/1580_141084_000016_000003.wav" type="audio/wav">
-                    </audio></td>
-				<td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/Vocodec_1.1kbps/1580_141084_000016_000003.wav" type="audio/wav">
-                    </audio></td>
-            </tr>
-        </table>
-    </div>
-    <div class="table-container">
-        <h4>Example 5 (2300_131720_000033_000003.wav,  at 1.1 kbps) </h4>
-        <div class="audio-container">
-            <!-- <div class="audio-block">
-                <label>Source: p246</label>
-                <audio controls>
-                    <source src="demo/src/p246_119.wav" type="audio/wav">
-                    您的浏览器不支持音频播放。
-                </audio>
-            </div> -->
-            <div class="audio-block">
-                <label>Ground Truth</label>
-                <audio controls>
-                    <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/2300_131720_000033_000003.wav" type="audio/wav">
-                </audio>
-          </div>
-        </div>
-        <table>
-            <tr>
-                <th>DAC</th>
-                <th>BigCodec</th>
-                <th>AudioDec</th>
-                <th>MDCTCodec-S</th>
-                <th>StreamCodec</th>
-				<th>VoCodec</th>
-            </tr>
-            <tr>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/2300_131720_000033_000003.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/2300_131720_000033_000003.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/2300_131720_000033_000003.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/2300_131720_000033_000003.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/2300_131720_000033_000003.wav" type="audio/wav">
-                    </audio></td>
-				<td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/Vocodec_1.1kbps/2300_131720_000033_000003.wav" type="audio/wav">
-                    </audio></td>
-            </tr>
-        </table>
-    </div>
-    <div class="table-container">
-        <h4>Example 6 (3729_6852_000040_000002.wav,  at 1.1 kbps) </h4>
-        <div class="audio-container">
-            <!-- <div class="audio-block">
-                <label>Source: p246</label>
-                <audio controls>
-                    <source src="demo/src/p246_119.wav" type="audio/wav">
-                    您的浏览器不支持音频播放。
-                </audio>
-            </div> -->
-            <div class="audio-block">
-                <label>Ground Truth</label>
-                <audio controls>
-                    <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/3729_6852_000040_000002.wav" type="audio/wav">
-                </audio>
-          </div>
-        </div>
-        <table>
-            <tr>
-                <th>DAC</th>
-                <th>BigCodec</th>
-                <th>AudioDec</th>
-                <th>MDCTCodec-S</th>
-                <th>StreamCodec</th>
-				<th>VoCodec</th>
-            </tr>
-            <tr>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/3729_6852_000040_000002.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/3729_6852_000040_000002.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/3729_6852_000040_000002.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/3729_6852_000040_000002.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/3729_6852_000040_000002.wav" type="audio/wav">
-                    </audio></td>
-				<td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/Vocodec_1.1kbps/3729_6852_000040_000002.wav" type="audio/wav">
-                    </audio></td>
-            </tr>
-        </table>
-    </div>
-    <div class="table-container">
-        <h4>Example 7 (5142_33396_000003_000003.wav,  at 1.1 kbps) </h4>
-        <div class="audio-container">
-            <!-- <div class="audio-block">
-                <label>Source: p246</label>
-                <audio controls>
-                    <source src="demo/src/p246_119.wav" type="audio/wav">
-                    您的浏览器不支持音频播放。
-                </audio>
-            </div> -->
-            <div class="audio-block">
-                <label>Ground Truth</label>
-                <audio controls>
-                    <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/5142_33396_000003_000003.wav" type="audio/wav">
-                </audio>
-          </div>
-        </div>
-        <table>
-            <tr>
-                <th>DAC</th>
-                <th>BigCodec</th>
-                <th>AudioDec</th>
-                <th>MDCTCodec-S</th>
-                <th>StreamCodec</th>
-				<th>VoCodec</th>
-            </tr>
-            <tr>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/5142_33396_000003_000003.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/5142_33396_000003_000003.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/5142_33396_000003_000003.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/5142_33396_000003_000003.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/5142_33396_000003_000003.wav" type="audio/wav">
-                    </audio></td>
-				<td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/Vocodec_1.1kbps/5142_33396_000003_000003.wav" type="audio/wav">
-                    </audio></td>
-            </tr>
-        </table>
-    </div>
-    <div class="table-container">
-        <h4>Example 8 (5683_32866_000039_000006.wav,  at 1.1 kbps) </h4>
-        <div class="audio-container">
-            <!-- <div class="audio-block">
-                <label>Source: p246</label>
-                <audio controls>
-                    <source src="demo/src/p246_119.wav" type="audio/wav">
-                    您的浏览器不支持音频播放。
-                </audio>
-            </div> -->
-            <div class="audio-block">
-                <label>Ground Truth</label>
-                <audio controls>
-                    <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/5683_32866_000039_000006.wav" type="audio/wav">
-                </audio>
-          </div>
-        </div>
-        <table>
-            <tr>
-                <th>DAC</th>
-                <th>BigCodec</th>
-                <th>AudioDec</th>
-                <th>MDCTCodec-S</th>
-                <th>StreamCodec</th>
-				<th>VoCodec</th>
-            </tr>
-            <tr>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/5683_32866_000039_000006.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/5683_32866_000039_000006.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/5683_32866_000039_000006.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/5683_32866_000039_000006.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/5683_32866_000039_000006.wav" type="audio/wav">
-                    </audio></td>
-				<td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/Vocodec_1.1kbps/5683_32866_000039_000006.wav" type="audio/wav">
-                    </audio></td>
-            </tr>
-        </table>
-    </div>
-    <div class="table-container">
-        <h4>Example 9 (7021_85628_000042_000001.wav,  at 1.1 kbps) </h4>
-        <div class="audio-container">
-            <!-- <div class="audio-block">
-                <label>Source: p246</label>
-                <audio controls>
-                    <source src="demo/src/p246_119.wav" type="audio/wav">
-                    您的浏览器不支持音频播放。
-                </audio>
-            </div> -->
-            <div class="audio-block">
-                <label>Ground Truth</label>
-                <audio controls>
-                    <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/7021_85628_000042_000001.wav" type="audio/wav">
-                </audio>
-          </div>
-        </div>
-        <table>
-            <tr>
-                <th>DAC</th>
-                <th>BigCodec</th>
-                <th>AudioDec</th>
-                <th>MDCTCodec-S</th>
-                <th>StreamCodec</th>
-				<th>VoCodec</th>
-            </tr>
-            <tr>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/7021_85628_000042_000001.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/7021_85628_000042_000001.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/7021_85628_000042_000001.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/7021_85628_000042_000001.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/7021_85628_000042_000001.wav" type="audio/wav">
-                    </audio></td>
-				<td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/Vocodec_1.1kbps/7021_85628_000042_000001.wav" type="audio/wav">
-                    </audio></td>
-            </tr>
-        </table>
-    </div>
-    <div class="table-container">
-        <h4>Example 10 (8455_210777_000014_000001.wav,  at 1.1 kbps) </h4>
-        <div class="audio-container">
-            <!-- <div class="audio-block">
-                <label>Source: p246</label>
-                <audio controls>
-                    <source src="demo/src/p246_119.wav" type="audio/wav">
-                    您的浏览器不支持音频播放。
-                </audio>
-            </div> -->
-            <div class="audio-block">
-                <label>Ground Truth</label>
-                <audio controls>
-                    <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/8455_210777_000014_000001.wav" type="audio/wav">
-                </audio>
-          </div>
-        </div>
-        <table>
-            <tr>
-                <th>DAC</th>
-                <th>BigCodec</th>
-                <th>AudioDec</th>
-                <th>MDCTCodec-S</th>
-                <th>StreamCodec</th>
-				<th>VoCodec</th>
-            </tr>
-            <tr>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/8455_210777_000014_000001.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/8455_210777_000014_000001.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/8455_210777_000014_000001.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/8455_210777_000014_000001.wav" type="audio/wav">
-                    </audio></td>
-                <td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/8455_210777_000014_000001.wav" type="audio/wav">
-                    </audio></td>
-				<td><audio controls>
-                        <source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/Vocodec_1.1kbps/8455_210777_000014_000001.wav" type="audio/wav">
-                    </audio></td>
-            </tr>
-        </table>
-    </div>
+</div>
+</section>
+<section aria-label="Samples" class="section samples" id="samples">
+<h2>3.3 Comparison with Baseline Codecs</h2>
+<p class="muted"><b>Sampling rate:</b> 16 kHz   •   <b>Bitrate:</b> 1.1 kbps</p>
+
+</div>
+<div id="cards">
+<div class="card sample" id="ex1">
+<div class="sample-head">
+<div class="sample-title">
+<h3>Example 1</h3>
+<code>121_121726_000004_000003.wav</code>
+</div>
+<div class="badges">
+<span class="chip"><span class="dot"></span>16 kHz</span>
+<span class="chip"><span class="dot dot2"></span>1.1 kbps</span>
+</div>
+</div>
+<div class="gtrow">
+<span class="label">Ground Truth</span>
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/121_121726_000004_000003.wav" type="audio/wav"/>
+</audio>
+</div>
+<div class="table-scroll">
+<table>
+<tr><th class="">DAC</th><th class="">BigCodec</th><th class="">AudioDec</th><th class="">MDCTCodec-S</th><th class="">StreamCodec</th><th class="vocodec">VoCodec</th></tr>
+<tr><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/121_121726_000004_000003.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/121_121726_000004_000003.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/121_121726_000004_000003.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/121_121726_000004_000003.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/121_121726_000004_000003.wav" type="audio/wav"/>
+</audio>
+</td><td class="vocodec">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/Vocodec_1.1kbps/121_121726_000004_000003.wav" type="audio/wav"/>
+</audio>
+</td></tr>
+</table>
+</div>
+</div>
+<div class="card sample" id="ex2">
+<div class="sample-head">
+<div class="sample-title">
+<h3>Example 2</h3>
+<code>237_126133_000021_000000.wav</code>
+</div>
+<div class="badges">
+<span class="chip"><span class="dot"></span>16 kHz</span>
+<span class="chip"><span class="dot dot2"></span>1.1 kbps</span>
+</div>
+</div>
+<div class="gtrow">
+<span class="label">Ground Truth</span>
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/237_126133_000021_000000.wav" type="audio/wav"/>
+</audio>
+</div>
+<div class="table-scroll">
+<table>
+<tr><th class="">DAC</th><th class="">BigCodec</th><th class="">AudioDec</th><th class="">MDCTCodec-S</th><th class="">StreamCodec</th><th class="vocodec">VoCodec</th></tr>
+<tr><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/237_126133_000021_000000.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/237_126133_000021_000000.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/237_126133_000021_000000.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/237_126133_000021_000000.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/237_126133_000021_000000.wav" type="audio/wav"/>
+</audio>
+</td><td class="vocodec">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/Vocodec_1.1kbps/237_126133_000021_000000.wav" type="audio/wav"/>
+</audio>
+</td></tr>
+</table>
+</div>
+</div>
+<div class="card sample" id="ex3">
+<div class="sample-head">
+<div class="sample-title">
+<h3>Example 3</h3>
+<code>1284_1180_000043_000001.wav</code>
+</div>
+<div class="badges">
+<span class="chip"><span class="dot"></span>16 kHz</span>
+<span class="chip"><span class="dot dot2"></span>1.1 kbps</span>
+</div>
+</div>
+<div class="gtrow">
+<span class="label">Ground Truth</span>
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/1284_1180_000043_000001.wav" type="audio/wav"/>
+</audio>
+</div>
+<div class="table-scroll">
+<table>
+<tr><th class="">DAC</th><th class="">BigCodec</th><th class="">AudioDec</th><th class="">MDCTCodec-S</th><th class="">StreamCodec</th><th class="vocodec">VoCodec</th></tr>
+<tr><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/1284_1180_000043_000001.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/1284_1180_000043_000001.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/1284_1180_000043_000001.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/1284_1180_000043_000001.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/1284_1180_000043_000001.wav" type="audio/wav"/>
+</audio>
+</td><td class="vocodec">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/Vocodec_1.1kbps/1284_1180_000043_000001.wav" type="audio/wav"/>
+</audio>
+</td></tr>
+</table>
+</div>
+</div>
+<div class="card sample" id="ex4">
+<div class="sample-head">
+<div class="sample-title">
+<h3>Example 4</h3>
+<code>1580_141084_000016_000003.wav</code>
+</div>
+<div class="badges">
+<span class="chip"><span class="dot"></span>16 kHz</span>
+<span class="chip"><span class="dot dot2"></span>1.1 kbps</span>
+</div>
+</div>
+<div class="gtrow">
+<span class="label">Ground Truth</span>
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/1580_141084_000016_000003.wav" type="audio/wav"/>
+</audio>
+</div>
+<div class="table-scroll">
+<table>
+<tr><th class="">DAC</th><th class="">BigCodec</th><th class="">AudioDec</th><th class="">MDCTCodec-S</th><th class="">StreamCodec</th><th class="vocodec">VoCodec</th></tr>
+<tr><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/1580_141084_000016_000003.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/1580_141084_000016_000003.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/1580_141084_000016_000003.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/1580_141084_000016_000003.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/1580_141084_000016_000003.wav" type="audio/wav"/>
+</audio>
+</td><td class="vocodec">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/Vocodec_1.1kbps/1580_141084_000016_000003.wav" type="audio/wav"/>
+</audio>
+</td></tr>
+</table>
+</div>
+</div>
+<div class="card sample" id="ex5">
+<div class="sample-head">
+<div class="sample-title">
+<h3>Example 5</h3>
+<code>2300_131720_000033_000003.wav</code>
+</div>
+<div class="badges">
+<span class="chip"><span class="dot"></span>16 kHz</span>
+<span class="chip"><span class="dot dot2"></span>1.1 kbps</span>
+</div>
+</div>
+<div class="gtrow">
+<span class="label">Ground Truth</span>
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/libritts16ktest/2300_131720_000033_000003.wav" type="audio/wav"/>
+</audio>
+</div>
+<div class="table-scroll">
+<table>
+<tr><th class="">DAC</th><th class="">BigCodec</th><th class="">AudioDec</th><th class="">MDCTCodec-S</th><th class="">StreamCodec</th><th class="vocodec">VoCodec</th></tr>
+<tr><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/dac/2300_131720_000033_000003.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/bigcodec1.1kbps-16k/2300_131720_000033_000003.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/ad/2300_131720_000033_000003.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/mdc/2300_131720_000033_000003.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/sc/2300_131720_000033_000003.wav" type="audio/wav"/>
+</audio>
+</td><td class="vocodec">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/16k_1.1kbps/Vocodec_1.1kbps/2300_131720_000033_000003.wav" type="audio/wav"/>
+</audio>
+</td></tr>
+</table>
+</div>
+</div>
+
+
+
+
+
+</div>
+
+</section>
+<section aria-label="Samples 48 kHz" class="section samples" id="samples48">
+<h2>48 kHz Samples</h2>
+<p class="muted"><b>Sampling rate:</b> 48 kHz   •   <b>Bitrate:</b> 2.7 kbps</p>
+
+</div>
+<div id="cards48">
+<div class="card sample" id="ex48_1">
+<div class="sample-head">
+<div class="sample-title">
+<h3>Example 1</h3>
+<code>p360_009.wav</code>
+</div>
+<div class="badges">
+<span class="chip"><span class="dot"></span>48 kHz</span>
+<span class="chip"><span class="dot dot2"></span>2.7 kbps</span>
+</div>
+</div>
+<div class="gtrow">
+<span class="label">Ground Truth</span>
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/gt/p360_009.wav" type="audio/wav"/>
+</audio>
+</div>
+<div class="table-scroll">
+<table>
+<tr><th class="">DAC</th><th class="">BigCodec</th><th class="">AudioDec</th><th class="">MDCTCodec-S</th><th class="">StreamCodec</th><th class="vocodec">VoCodec</th></tr>
+<tr><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/dac/p360_009.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/bigcodec/p360_009.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/audiodec/p360_009.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/mdctcodecs/p360_009.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/smc/p360_009.wav" type="audio/wav"/>
+</audio>
+</td><td class="vocodec">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/vocodec/p360_009.wav" type="audio/wav"/>
+</audio>
+</td></tr>
+</table>
+</div>
+</div>
+<div class="card sample" id="ex48_2">
+<div class="sample-head">
+<div class="sample-title">
+<h3>Example 2</h3>
+<code>p360_037.wav</code>
+</div>
+<div class="badges">
+<span class="chip"><span class="dot"></span>48 kHz</span>
+<span class="chip"><span class="dot dot2"></span>2.7 kbps</span>
+</div>
+</div>
+<div class="gtrow">
+<span class="label">Ground Truth</span>
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/gt/p360_037.wav" type="audio/wav"/>
+</audio>
+</div>
+<div class="table-scroll">
+<table>
+<tr><th class="">DAC</th><th class="">BigCodec</th><th class="">AudioDec</th><th class="">MDCTCodec-S</th><th class="">StreamCodec</th><th class="vocodec">VoCodec</th></tr>
+<tr><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/dac/p360_037.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/bigcodec/p360_037.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/audiodec/p360_037.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/mdctcodecs/p360_037.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/smc/p360_037.wav" type="audio/wav"/>
+</audio>
+</td><td class="vocodec">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/vocodec/p360_037.wav" type="audio/wav"/>
+</audio>
+</td></tr>
+</table>
+</div>
+</div>
+<div class="card sample" id="ex48_3">
+<div class="sample-head">
+<div class="sample-title">
+<h3>Example 3</h3>
+<code>p361_007.wav</code>
+</div>
+<div class="badges">
+<span class="chip"><span class="dot"></span>48 kHz</span>
+<span class="chip"><span class="dot dot2"></span>2.7 kbps</span>
+</div>
+</div>
+<div class="gtrow">
+<span class="label">Ground Truth</span>
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/gt/p361_007.wav" type="audio/wav"/>
+</audio>
+</div>
+<div class="table-scroll">
+<table>
+<tr><th class="">DAC</th><th class="">BigCodec</th><th class="">AudioDec</th><th class="">MDCTCodec-S</th><th class="">StreamCodec</th><th class="vocodec">VoCodec</th></tr>
+<tr><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/dac/p361_007.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/bigcodec/p361_007.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/audiodec/p361_007.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/mdctcodecs/p361_007.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/smc/p361_007.wav" type="audio/wav"/>
+</audio>
+</td><td class="vocodec">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/vocodec/p361_007.wav" type="audio/wav"/>
+</audio>
+</td></tr>
+</table>
+</div>
+</div>
+<div class="card sample" id="ex48_4">
+<div class="sample-head">
+<div class="sample-title">
+<h3>Example 4</h3>
+<code>p361_237.wav</code>
+</div>
+<div class="badges">
+<span class="chip"><span class="dot"></span>48 kHz</span>
+<span class="chip"><span class="dot dot2"></span>2.7 kbps</span>
+</div>
+</div>
+<div class="gtrow">
+<span class="label">Ground Truth</span>
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/gt/p361_237.wav" type="audio/wav"/>
+</audio>
+</div>
+<div class="table-scroll">
+<table>
+<tr><th class="">DAC</th><th class="">BigCodec</th><th class="">AudioDec</th><th class="">MDCTCodec-S</th><th class="">StreamCodec</th><th class="vocodec">VoCodec</th></tr>
+<tr><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/dac/p361_237.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/bigcodec/p361_237.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/audiodec/p361_237.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/mdctcodecs/p361_237.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/smc/p361_237.wav" type="audio/wav"/>
+</audio>
+</td><td class="vocodec">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/vocodec/p361_237.wav" type="audio/wav"/>
+</audio>
+</td></tr>
+</table>
+</div>
+</div>
+<div class="card sample" id="ex48_5">
+<div class="sample-head">
+<div class="sample-title">
+<h3>Example 5</h3>
+<code>p361_262.wav</code>
+</div>
+<div class="badges">
+<span class="chip"><span class="dot"></span>48 kHz</span>
+<span class="chip"><span class="dot dot2"></span>2.7 kbps</span>
+</div>
+</div>
+<div class="gtrow">
+<span class="label">Ground Truth</span>
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/gt/p361_262.wav" type="audio/wav"/>
+</audio>
+</div>
+<div class="table-scroll">
+<table>
+<tr><th class="">DAC</th><th class="">BigCodec</th><th class="">AudioDec</th><th class="">MDCTCodec-S</th><th class="">StreamCodec</th><th class="vocodec">VoCodec</th></tr>
+<tr><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/dac/p361_262.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/bigcodec/p361_262.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/audiodec/p361_262.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/mdctcodecs/p361_262.wav" type="audio/wav"/>
+</audio>
+</td><td class="">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/smc/p361_262.wav" type="audio/wav"/>
+</audio>
+</td><td class="vocodec">
+<audio controls="" preload="none">
+<source src="https://pb20000090.github.io/VoCodec/48k_2.7kbps/vocodec/p361_262.wav" type="audio/wav"/>
+</audio>
+</td></tr>
+</table>
+</div>
+</div>
+
+
+
+
+
+</div>
+
+</section>
+</main>
+<a class="backtop" href="#top" onClick="window.scrollTo({top:0, behavior:'smooth'}); return false;">↑ Back to top</a>
+<script>
+    
+    (function(){
+      function setupFilter(inputId, cardsId, shownId){
+        const q = document.getElementById(inputId);
+        const cards = Array.from(document.querySelectorAll(`#${cardsId} .sample`));
+        const shown = document.getElementById(shownId);
+        if(!q || !shown || !cards.length) return;
+
+        function norm(s){ return (s || "").toLowerCase().trim(); }
+
+        function apply(){
+          const needle = norm(q.value);
+          let cnt = 0;
+          for(const c of cards){
+            const text = norm(c.innerText);
+            const ok = !needle || text.includes(needle);
+            c.style.display = ok ? "" : "none";
+            if(ok) cnt++;
+          }
+          shown.textContent = String(cnt);
+        }
+
+        q.addEventListener("input", apply);
+        apply();
+      }
+
+      setupFilter("q", "cards", "shown");
+      setupFilter("q48", "cards48", "shown48");
+    })();
+
+  </script>
 </body>
-
 </html>

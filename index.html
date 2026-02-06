@@ -36,6 +36,22 @@
 
     a{ color:inherit; text-decoration:none; }
     a:hover{ text-decoration:underline; text-decoration-thickness:2px; text-underline-offset:3px; }
+/* Fix: keep all codec columns wide enough so <audio> controls don't collapse */
+.table-scroll table{
+  table-layout: fixed;
+  min-width: 1320px;          /* ~220px * 6 cols, prevents DAC column being too narrow */
+}
+
+.table-scroll th,
+.table-scroll td{
+  width: calc(100% / 6);      /* 6 codec columns */
+}
+
+.table-scroll td audio{
+  width: 100%;
+  max-width: none;            /* let it use the cell width */
+  min-width: 200px;           /* extra safety: keep play button visible */
+}
 
     .topbar{
       position:sticky; top:0; z-index:50;
@@ -872,4 +888,5 @@
   </script>
 </body>
 </html>
+
 
